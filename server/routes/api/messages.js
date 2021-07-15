@@ -11,18 +11,30 @@ router.post("/", async (req, res, next) => {
     const senderId = req.user.id;
     const { recipientId, text, conversationId, sender } = req.body;
 
-    // if we already know conversation id, we can save time and just add it to message and return
-    if (conversationId) {
+    // find the conversation
+    let conversation = await Conversation.findConversationById(conversationId);
+
+    // do this if conversation has been found
+    if (conversation) {
+      const { user1Id, user2Id } = conversation.dataValues;
+      // if user1Id or user2Id does not match senderId nor recipientId, throw unauthorized
+      if (
+        (user1Id !== senderId && user1Id !== recipientId) ||
+        (user2Id !== senderId && user2Id !== recipientId)
+      ) {
+        return res.sendStatus(403);
+      }
+      // add the message since there is no problem
       const message = await Message.create({ senderId, text, conversationId });
       return res.json({ message, sender });
     }
-    // if we don't have conversation id, find a conversation to make sure it doesn't already exist
-    let conversation = await Conversation.findConversation(
-      senderId,
-      recipientId
-    );
 
     if (!conversation) {
+      // if sender is null, we have prohibited request
+      // if sender.id does not match with senderId, send 403
+      if (!sender || sender.id !== senderId) {
+        return res.sendStatus(403);
+      }
       // create conversation
       conversation = await Conversation.create({
         user1Id: senderId,
