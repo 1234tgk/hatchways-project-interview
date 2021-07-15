@@ -11,8 +11,6 @@ export const addMessageToStore = (state, payload) => {
     return [newConvo, ...state];
   }
 
-  // message is undefined here!
-
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
       const convoCopy = { ...convo };

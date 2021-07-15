@@ -12,34 +12,32 @@ router.post("/", async (req, res, next) => {
     const { recipientId, text, conversationId, sender } = req.body;
 
     // find the conversation
-    let conversation = await Conversation.findConversation(
-      senderId,
-      recipientId
-    );
+    let conversation = await Conversation.findConversationById(conversationId);
 
-    // if convo is null but sender is not trying to create new convo (by checking if sender is null),
-    // send 401 status since it is unauthorized
-    if (!conversation && !sender) {
-      return res.sendStatus(401);
-    }
-
-    // if convo is not null (convo between sender(current user) and recipient is found), but
-    // the convoId is not equals to the convo we found, send 401 status since it is unauthorized
-    if (conversation && conversation.dataValues.id !== conversationId) {
-      return res.sendStatus(401);
-    }
-
-    // if we already know conversation id, we can save time and just add it to message and return
-    // make sure if conversation is not null
-    if (conversation && conversationId) {
+    // do this if conversation has been found
+    if (conversation) {
+      const { user1Id, user2Id } = conversation.dataValues;
+      // if user1Id does not match senderId nor recipientId, throw unauthorized
+      if (user1Id !== senderId && user1Id !== recipientId) {
+        return res.sendStatus(401);
+      }
+      // same for user2Id
+      if (user2Id !== senderId && user2Id !== recipientId) {
+        return res.sendStatus(401);
+      }
+      // add the message since there is no problem
       const message = await Message.create({ senderId, text, conversationId });
       return res.json({ message, sender });
     }
 
     if (!conversation) {
-      // if sender.id does not match with senderId, send 401
+      // if sender is null, we have prohibited request
+      if (!sender) {
+        return res.sendStatus(403);
+      }
+      // if sender.id does not match with senderId, send 403
       if (sender.id !== senderId) {
-        return res.sendStatus(401);
+        return res.sendStatus(403);
       }
       // create conversation
       conversation = await Conversation.create({
