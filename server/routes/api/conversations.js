@@ -19,7 +19,12 @@ router.get("/", async (req, res, next) => {
           user2Id: userId,
         },
       },
-      attributes: ["id"],
+      attributes: [
+        "id",
+        "totalMessageCount",
+        "user1ReadCount",
+        "user2ReadCount",
+      ],
       order: [[Message, "createdAt", "ASC"]],
       include: [
         { model: Message, order: ["createdAt", "ASC"] },

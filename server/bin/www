@@ -44,6 +44,9 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("new-message", {
       message: data.message,
       sender: data.sender,
+      totalMessageCount: data.totalMessageCount,
+      user1ReadCount: data.user1ReadCount,
+      user2ReadCount: data.user2ReadCount,
     });
   });
 

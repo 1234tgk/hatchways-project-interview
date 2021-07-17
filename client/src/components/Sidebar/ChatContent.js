@@ -38,7 +38,21 @@ const ChatContent = (props) => {
   const classes = useStyles();
 
   const { conversation } = props;
-  const { latestMessageText, otherUser } = conversation;
+  const {
+    latestMessageText,
+    otherUser,
+    user1,
+    totalMessageCount,
+    user1ReadCount,
+    user2ReadCount,
+  } = conversation;
+
+  let diff;
+  if (user1 === null) {
+    diff = totalMessageCount - user1ReadCount;
+  } else {
+    diff = totalMessageCount - user2ReadCount;
+  }
 
   return (
     <Box className={classes.root}>
@@ -49,6 +63,11 @@ const ChatContent = (props) => {
         <Typography className={classes.previewText}>
           {latestMessageText}
         </Typography>
+      </Box>
+      <Box>
+        {diff !== 0 && (
+          <Typography className={classes.notification}>{diff}</Typography>
+        )}
       </Box>
     </Box>
   );

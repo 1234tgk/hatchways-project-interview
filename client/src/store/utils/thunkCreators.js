@@ -88,6 +88,9 @@ const sendMessage = (data, body) => {
     message: data.message,
     recipientId: body.recipientId,
     sender: data.sender,
+    totalMessageCount: data.totalMessageCount,
+    user1ReadCount: data.user1ReadCount,
+    user2ReadCount: data.user2ReadCount,
   });
 };
 
@@ -100,7 +103,15 @@ export const postMessage = (body) => async (dispatch) => {
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
     } else {
-      dispatch(setNewMessage(data.message));
+      dispatch(
+        setNewMessage(
+          data.message,
+          null,
+          data.totalMessageCount,
+          data.user1ReadCount,
+          data.user2ReadCount
+        )
+      );
     }
 
     sendMessage(data, body);

@@ -26,7 +26,27 @@ router.post("/", async (req, res, next) => {
       }
       // add the message since there is no problem
       const message = await Message.create({ senderId, text, conversationId });
-      return res.json({ message, sender });
+
+      // increment the message count in conversation
+      await conversation.increment("totalMessageCount");
+
+      // find which user is sender
+      // set appropriate userReadCount equal to totalMessageCount
+      if (user1Id === senderId) {
+        conversation.user1ReadCount = conversation.totalMessageCount;
+      } else if (user2Id === senderId) {
+        conversation.user2ReadCount = conversation.totalMessageCount;
+      }
+
+      await conversation.save();
+
+      return res.json({
+        message,
+        sender,
+        totalMessageCount: conversation.totalMessageCount,
+        user1ReadCount: conversation.user1ReadCount,
+        user2ReadCount: conversation.user2ReadCount,
+      });
     }
 
     if (!conversation) {
@@ -39,6 +59,9 @@ router.post("/", async (req, res, next) => {
       conversation = await Conversation.create({
         user1Id: senderId,
         user2Id: recipientId,
+        totalMessageCount: 1, // pre-incrementing
+        user1ReadCount: 1,
+        user2ReadCount: 0,
       });
       if (onlineUsers.includes(sender.id)) {
         sender.online = true;
@@ -49,7 +72,14 @@ router.post("/", async (req, res, next) => {
       text,
       conversationId: conversation.id,
     });
-    res.json({ message, sender });
+
+    return res.json({
+      message,
+      sender,
+      totalMessageCount: conversation.totalMessageCount,
+      user1ReadCount: conversation.user1ReadCount,
+      user2ReadCount: conversation.user2ReadCount,
+    });
   } catch (error) {
     next(error);
   }

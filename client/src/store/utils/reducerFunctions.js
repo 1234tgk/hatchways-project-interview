@@ -1,5 +1,6 @@
 export const addMessageToStore = (state, payload) => {
-  const { message, sender } = payload;
+  const { message, sender, totalMessageCount, user1ReadCount, user2ReadCount } =
+    payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
   if (sender !== null) {
     const newConvo = {
@@ -7,6 +8,9 @@ export const addMessageToStore = (state, payload) => {
       otherUser: sender,
       messages: [message],
     };
+    newConvo.totalMessageCount = totalMessageCount;
+    newConvo.user1ReadCount = user1ReadCount;
+    newConvo.user2ReadCount = user2ReadCount;
     newConvo.latestMessageText = message.text;
     return [newConvo, ...state];
   }
@@ -15,6 +19,9 @@ export const addMessageToStore = (state, payload) => {
     if (convo.id === message.conversationId) {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
+      convoCopy.totalMessageCount = totalMessageCount;
+      convoCopy.user1ReadCount = user1ReadCount;
+      convoCopy.user2ReadCount = user2ReadCount;
       convoCopy.latestMessageText = message.text;
 
       return convoCopy;

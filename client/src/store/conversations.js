@@ -25,10 +25,22 @@ export const gotConversations = (conversations) => {
   };
 };
 
-export const setNewMessage = (message, sender) => {
+export const setNewMessage = (
+  message,
+  sender,
+  totalMessageCount,
+  user1ReadCount,
+  user2ReadCount
+) => {
   return {
     type: SET_MESSAGE,
-    payload: { message, sender: sender || null },
+    payload: {
+      message,
+      sender: sender || null,
+      totalMessageCount,
+      user1ReadCount,
+      user2ReadCount,
+    },
   };
 };
 
