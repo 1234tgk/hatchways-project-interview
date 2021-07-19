@@ -88,3 +88,21 @@ export const addNewConvoToStore = (state, recipientId, message) => {
     }
   });
 };
+
+// if possible, make a new function to store the read counts
+export const updateReadCountToStore = (state, payload) => {
+  const { conversationId, totalMessageCount, user1ReadCount, user2ReadCount } =
+    payload;
+
+  return state.map((convo) => {
+    if (convo.id === conversationId) {
+      const newConvo = { ...convo };
+      newConvo.totalMessageCount = totalMessageCount;
+      newConvo.user1ReadCount = user1ReadCount;
+      newConvo.user2ReadCount = user2ReadCount;
+      return newConvo;
+    } else {
+      return convo;
+    }
+  });
+};

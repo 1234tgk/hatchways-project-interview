@@ -5,6 +5,7 @@ import {
   removeOfflineUser,
   addOnlineUser,
 } from "./store/conversations";
+import { readMessage, updateUserReadCount } from "./store/utils/thunkCreators";
 
 const socket = io(window.location.origin);
 
@@ -28,6 +29,11 @@ socket.on("connect", () => {
         data.user2ReadCount
       )
     );
+    store.dispatch(readMessage(data.conversationId));
+  });
+
+  socket.on("user-read-message", (data) => {
+    store.dispatch(updateUserReadCount(data.conversationId));
   });
 });
 

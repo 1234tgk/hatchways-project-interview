@@ -2,7 +2,7 @@ const router = require("express").Router();
 const { Conversation, Message } = require("../../db/models");
 const onlineUsers = require("../../onlineUsers");
 
-// expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists yet)
+// expects {recipientId, text, conversationId, sender } in body (conversationId will be null if no conversation exists yet)
 router.post("/", async (req, res, next) => {
   try {
     if (!req.user) {
@@ -43,6 +43,7 @@ router.post("/", async (req, res, next) => {
       return res.json({
         message,
         sender,
+        conversationId,
         totalMessageCount: conversation.totalMessageCount,
         user1ReadCount: conversation.user1ReadCount,
         user2ReadCount: conversation.user2ReadCount,
@@ -76,6 +77,7 @@ router.post("/", async (req, res, next) => {
     return res.json({
       message,
       sender,
+      conversationId: conversation.id,
       totalMessageCount: conversation.totalMessageCount,
       user1ReadCount: conversation.user1ReadCount,
       user2ReadCount: conversation.user2ReadCount,

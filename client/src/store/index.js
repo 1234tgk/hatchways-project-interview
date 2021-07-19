@@ -8,10 +8,17 @@ import conversations from "./conversations";
 import activeConversation from "./activeConversation";
 
 const CLEAR_ON_LOGOUT = "CLEAR_ON_LOGOUT";
+const READ_ACTIVE_CHAT = "READ_ACTIVE_CHAT";
 
 export const clearOnLogout = () => {
   return {
     type: CLEAR_ON_LOGOUT,
+  };
+};
+
+export const readActiveChat = () => {
+  return {
+    type: READ_ACTIVE_CHAT,
   };
 };
 

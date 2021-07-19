@@ -78,8 +78,8 @@ async function seed() {
     user2Id: hualing.id,
     user1Id: thomas.id,
     totalMessageCount: 12,
-    user1ReadCount: 12,
-    user2ReadCount: 0,
+    user1ReadCount: 0,
+    user2ReadCount: 12,
   });
 
   for (let i = 0; i < 11; i++) {

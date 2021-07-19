@@ -91,4 +91,62 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// update the selected convo (by Id) the selected user's read count
+// no body! (wow)
+router.post("/:id", async (req, res, next) => {
+  try {
+    // check if user is there
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    // req.user.id == current user's id
+
+    const { id } = req.params; // convo id
+
+    let conversation = await Conversation.findConversationById(id);
+
+    // check prohibited accesss
+    if (
+      conversation.user1Id !== req.user.id &&
+      conversation.user2Id !== req.user.id
+    ) {
+      return res.sendStatus(403);
+    }
+
+    // check which user (user1 or user2) is the logged in user,
+    // update the corresponding read count
+    if (conversation.user1Id === req.user.id) {
+      conversation.user1ReadCount = conversation.totalMessageCount;
+    } else {
+      conversation.user2ReadCount = conversation.totalMessageCount;
+    }
+
+    await conversation.save();
+
+    conversation.userId = req.user.id;
+
+    res.json(conversation);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/:id", async (req, res, next) => {
+  try {
+    // check if user is there
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    // req.user.id == current user's id
+
+    const { id } = req.params; // convo id
+
+    let conversation = await Conversation.findConversationById(id);
+
+    res.json(conversation);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
