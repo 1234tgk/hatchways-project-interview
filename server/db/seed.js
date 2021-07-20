@@ -26,25 +26,25 @@ async function seed() {
   const santaigoConvo = await Conversation.create({
     user1Id: thomas.id,
     user2Id: santiago.id,
-    totalMessageCount: 3,
-    user1ReadCount: 3,
-    user2ReadCount: 3,
   });
 
   await Message.create({
     conversationId: santaigoConvo.id,
     senderId: santiago.id,
     text: "Where are you from?",
+    readStatus: true,
   });
   await Message.create({
     conversationId: santaigoConvo.id,
     senderId: thomas.id,
     text: "I'm from New York",
+    readStatus: true,
   });
   await Message.create({
     conversationId: santaigoConvo.id,
     senderId: santiago.id,
     text: "Share photo of your city, please",
+    readStatus: true,
   });
 
   const chiumbo = await User.create({
@@ -57,14 +57,12 @@ async function seed() {
   const chiumboConvo = await Conversation.create({
     user1Id: chiumbo.id,
     user2Id: thomas.id,
-    totalMessageCount: 1,
-    user1ReadCount: 1,
-    user2ReadCount: 1,
   });
   await Message.create({
     conversationId: chiumboConvo.id,
     senderId: chiumbo.id,
     text: "Sure! What time?",
+    readStatus: true,
   });
 
   const hualing = await User.create({
@@ -77,9 +75,6 @@ async function seed() {
   const hualingConvo = await Conversation.create({
     user2Id: hualing.id,
     user1Id: thomas.id,
-    totalMessageCount: 12,
-    user1ReadCount: 0,
-    user2ReadCount: 12,
   });
 
   for (let i = 0; i < 11; i++) {
@@ -87,6 +82,7 @@ async function seed() {
       conversationId: hualingConvo.id,
       senderId: hualing.id,
       text: "a test message",
+      readStatus: false,
     });
   }
 
@@ -94,6 +90,7 @@ async function seed() {
     conversationId: hualingConvo.id,
     senderId: hualing.id,
     text: "😂 😂 😂",
+    readStatus: false,
   });
 
   const otherUsers = await Promise.all([

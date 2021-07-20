@@ -1,14 +1,16 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { createTheme, makeStyles } from "@material-ui/core/styles";
 import { Box, Avatar } from "@material-ui/core";
+
+const theme = createTheme();
+theme.spacing(2);
 
 const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    paddingTop: 12,
-    paddingBottom: 12,
+    theme,
   },
   avatar: {
     height: 25,

@@ -4,8 +4,9 @@ import {
   setNewMessage,
   removeOfflineUser,
   addOnlineUser,
+  updateConversation,
 } from "./store/conversations";
-import { readMessage, updateUserReadCount } from "./store/utils/thunkCreators";
+import { readMessage } from "./store/utils/thunkCreators";
 
 const socket = io(window.location.origin);
 
@@ -20,20 +21,15 @@ socket.on("connect", () => {
     store.dispatch(removeOfflineUser(id));
   });
   socket.on("new-message", (data) => {
-    store.dispatch(
-      setNewMessage(
-        data.message,
-        data.sender,
-        data.totalMessageCount,
-        data.user1ReadCount,
-        data.user2ReadCount
-      )
-    );
-    store.dispatch(readMessage(data.conversationId));
+    console.log("from socket");
+    store.dispatch(setNewMessage(data.message, data.sender));
+    // read message for other user if conversationId and activeConversation is equal to one another
+    if (data.message.conversationId === store.getState().activeConversation) {
+      store.dispatch(readMessage(data.message.conversationId));
+    }
   });
-
-  socket.on("user-read-message", (data) => {
-    store.dispatch(updateUserReadCount(data.conversationId));
+  socket.on("read-message", (data) => {
+    store.dispatch(updateConversation(data));
   });
 });
 

@@ -19,12 +19,7 @@ router.get("/", async (req, res, next) => {
           user2Id: userId,
         },
       },
-      attributes: [
-        "id",
-        "totalMessageCount",
-        "user1ReadCount",
-        "user2ReadCount",
-      ],
+      attributes: ["id"],
       order: [[Message, "createdAt", "ASC"]],
       include: [
         { model: Message, order: ["createdAt", "ASC"] },
@@ -91,59 +86,86 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// update the selected convo (by Id) the selected user's read count
-// no body! (wow)
-router.post("/:id", async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
   try {
-    // check if user is there
     if (!req.user) {
       return res.sendStatus(401);
     }
-    // req.user.id == current user's id
 
-    const { id } = req.params; // convo id
+    const userId = req.user.id;
+    const conversationId = req.params.id;
 
-    let conversation = await Conversation.findConversationById(id);
+    await Message.update(
+      { readStatus: true },
+      {
+        where: {
+          [Op.and]: {
+            conversationId: conversationId,
+            senderId: {
+              [Op.not]: userId,
+            },
+          },
+        },
+      }
+    );
 
-    // check prohibited accesss
-    if (
-      conversation.user1Id !== req.user.id &&
-      conversation.user2Id !== req.user.id
-    ) {
-      return res.sendStatus(403);
+    let conversation = await Conversation.findOne({
+      where: {
+        id: conversationId,
+      },
+      attributes: ["id"],
+      order: [[Message, "createdAt", "ASC"]],
+      include: [
+        { model: Message, order: ["createdAt", "ASC"] },
+        {
+          model: User,
+          as: "user1",
+          where: {
+            id: {
+              [Op.not]: userId,
+            },
+          },
+          attributes: ["id", "username", "photoUrl"],
+          required: false,
+        },
+        {
+          model: User,
+          as: "user2",
+          where: {
+            id: {
+              [Op.not]: userId,
+            },
+          },
+          attributes: ["id", "username", "photoUrl"],
+          required: false,
+        },
+      ],
+    });
+
+    const convoJSON = conversation.toJSON();
+
+    // set a property "otherUser" so that frontend will have easier access
+    if (convoJSON.user1) {
+      convoJSON.otherUser = convoJSON.user1;
+      delete convoJSON.user1;
+    } else if (convoJSON.user2) {
+      convoJSON.otherUser = convoJSON.user2;
+      delete convoJSON.user2;
     }
 
-    // check which user (user1 or user2) is the logged in user,
-    // update the corresponding read count
-    if (conversation.user1Id === req.user.id) {
-      conversation.user1ReadCount = conversation.totalMessageCount;
+    // set property for online status of the other user
+    if (onlineUsers.includes(convoJSON.otherUser.id)) {
+      convoJSON.otherUser.online = true;
     } else {
-      conversation.user2ReadCount = conversation.totalMessageCount;
+      convoJSON.otherUser.online = false;
     }
 
-    await conversation.save();
+    // set properties for notification count and latest message preview
+    convoJSON.latestMessageText =
+      convoJSON.messages[convoJSON.messages.length - 1].text;
+    conversation = convoJSON;
 
-    conversation.userId = req.user.id;
-
-    res.json(conversation);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get("/:id", async (req, res, next) => {
-  try {
-    // check if user is there
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
-    // req.user.id == current user's id
-
-    const { id } = req.params; // convo id
-
-    let conversation = await Conversation.findConversationById(id);
-
-    res.json(conversation);
+    res.status(200).json(conversation);
   } catch (error) {
     next(error);
   }

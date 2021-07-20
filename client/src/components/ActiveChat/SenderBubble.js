@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography } from "@material-ui/core";
+import ReadMarker from "./ReadMarker";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -13,11 +14,6 @@ const useStyles = makeStyles(() => ({
     color: "#BECCE2",
     fontWeight: "bold",
     marginBottom: 5,
-  },
-  avatar: {
-    height: 25,
-    width: 25,
-    marginTop: 6,
   },
   text: {
     fontSize: 14,
@@ -34,13 +30,14 @@ const useStyles = makeStyles(() => ({
 
 const SenderBubble = (props) => {
   const classes = useStyles();
-  const { time, text } = props;
+  const { time, text, otherUser, markerOn } = props;
   return (
     <Box className={classes.root}>
       <Typography className={classes.date}>{time}</Typography>
       <Box className={classes.bubble}>
         <Typography className={classes.text}>{text}</Typography>
       </Box>
+      {markerOn && <ReadMarker otherUser={otherUser}></ReadMarker>}
     </Box>
   );
 };

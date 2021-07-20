@@ -3,20 +3,7 @@ const { Op } = Sequelize;
 const db = require("../db");
 const Message = require("./message");
 
-const Conversation = db.define("conversation", {
-  totalMessageCount: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
-  user1ReadCount: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
-  user2ReadCount: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
-});
+const Conversation = db.define("conversation", {});
 
 // find conversation given the conversation id
 

@@ -11,7 +11,6 @@ const { app, sessionStore } = require("../app");
 const http = require("http");
 const db = require("../db");
 const onlineUsers = require("../onlineUsers");
-const { Conversation } = require("../db/models");
 
 /**
  * Get port from environment and store in Express.
@@ -42,14 +41,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new-message", (data) => {
+    console.log("from www server");
     socket.broadcast.emit("new-message", {
       message: data.message,
       sender: data.sender,
-      conversationId: data.conversationId,
-      totalMessageCount: data.totalMessageCount,
-      user1ReadCount: data.user1ReadCount,
-      user2ReadCount: data.user2ReadCount,
     });
+  });
+
+  socket.on("read-message", (data) => {
+    socket.broadcast.emit("read-message", data);
   });
 
   socket.on("logout", (id) => {
@@ -58,10 +58,6 @@ io.on("connection", (socket) => {
       onlineUsers.splice(userIndex, 1);
       socket.broadcast.emit("remove-offline-user", id);
     }
-  });
-
-  socket.on("user-read-message", (data) => {
-    socket.broadcast.emit("user-read-message", data);
   });
 });
 

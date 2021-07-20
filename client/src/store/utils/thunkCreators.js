@@ -5,7 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
-  updateReadCount,
+  updateConversation,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -89,10 +89,6 @@ const sendMessage = (data, body) => {
     message: data.message,
     recipientId: body.recipientId,
     sender: data.sender,
-    conversationId: data.conversationId,
-    totalMessageCount: data.totalMessageCount,
-    user1ReadCount: data.user1ReadCount,
-    user2ReadCount: data.user2ReadCount,
   });
 };
 
@@ -105,65 +101,25 @@ export const postMessage = (body) => async (dispatch) => {
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
     } else {
-      dispatch(
-        setNewMessage(
-          data.message,
-          null,
-          data.totalMessageCount,
-          data.user1ReadCount,
-          data.user2ReadCount
-        )
-      );
+      dispatch(setNewMessage(data.message));
     }
 
     sendMessage(data, body);
-    // also, dispatch read message reducer
-    dispatch(
-      updateReadCount(
-        data.conversationId,
-        data.totalMessageCount,
-        data.user1ReadCount,
-        data.user2ReadCount
-      )
-    );
+
+    console.log("from thunk");
   } catch (error) {
     console.error(error);
   }
 };
 
-export const readMessage = (conversationId) => async (dispatch, getState) => {
-  if (getState().activeConversation === conversationId) {
-    const { data } = await axios.post(`/api/conversations/${conversationId}`);
-    const { totalMessageCount, userId, user1ReadCount, user2ReadCount } = data;
-    // dispatch to actions in converation
-    dispatch(
-      updateReadCount(
-        conversationId,
-        totalMessageCount,
-        user1ReadCount,
-        user2ReadCount
-      )
-    );
-    // broadcast emit that user read?
-    socket.emit("user-read-message", {
-      conversationId,
-      userId,
-    });
+export const readMessage = (conversationId) => async (dispatch) => {
+  try {
+    const { data } = await axios.put(`/api/conversations/${conversationId}`);
+    dispatch(updateConversation(data));
+    socket.emit("read-message", data);
+  } catch (error) {
+    console.error(error);
   }
-};
-
-export const updateUserReadCount = (conversationId) => async (dispatch) => {
-  const { data } = await axios.get(`/api/conversations/${conversationId}`);
-  const { totalMessageCount, user1ReadCount, user2ReadCount } = data;
-
-  dispatch(
-    updateReadCount(
-      conversationId,
-      totalMessageCount,
-      user1ReadCount,
-      user2ReadCount
-    )
-  );
 };
 
 export const searchUsers = (searchTerm) => async (dispatch) => {

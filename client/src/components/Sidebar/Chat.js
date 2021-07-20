@@ -40,7 +40,10 @@ class Chat extends Component {
           online={otherUser.online}
           sidebar={true}
         />
-        <ChatContent conversation={this.props.conversation} />
+        <ChatContent
+          conversation={this.props.conversation}
+          isActive={this.props.isActive}
+        />
       </Box>
     );
   }
