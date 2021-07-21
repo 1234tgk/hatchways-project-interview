@@ -37,7 +37,7 @@ const SenderBubble = (props) => {
       <Box className={classes.bubble}>
         <Typography className={classes.text}>{text}</Typography>
       </Box>
-      {markerOn && <ReadMarker otherUser={otherUser}></ReadMarker>}
+      {markerOn && <ReadMarker otherUser={otherUser} />}
     </Box>
   );
 };

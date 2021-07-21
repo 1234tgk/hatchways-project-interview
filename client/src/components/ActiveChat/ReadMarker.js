@@ -3,14 +3,13 @@ import { createTheme, makeStyles } from "@material-ui/core/styles";
 import { Box, Avatar } from "@material-ui/core";
 
 const theme = createTheme();
-theme.spacing(2);
 
 const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    theme,
+    padding: theme.spacing(),
   },
   avatar: {
     height: 25,
@@ -28,7 +27,7 @@ const ReadMarker = (props) => {
         alt={otherUser.username}
         src={otherUser.photoUrl}
         className={classes.avatar}
-      ></Avatar>
+      />
     </Box>
   );
 };

@@ -105,8 +105,6 @@ export const postMessage = (body) => async (dispatch) => {
     }
 
     sendMessage(data, body);
-
-    console.log("from thunk");
   } catch (error) {
     console.error(error);
   }
@@ -114,7 +112,7 @@ export const postMessage = (body) => async (dispatch) => {
 
 export const readMessage = (conversationId) => async (dispatch) => {
   try {
-    const { data } = await axios.put(`/api/conversations/${conversationId}`);
+    const { data } = await axios.put(`/api/messages/${conversationId}`);
     dispatch(updateConversation(data));
     socket.emit("read-message", data);
   } catch (error) {

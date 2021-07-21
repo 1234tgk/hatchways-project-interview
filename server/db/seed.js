@@ -82,7 +82,6 @@ async function seed() {
       conversationId: hualingConvo.id,
       senderId: hualing.id,
       text: "a test message",
-      readStatus: false,
     });
   }
 
@@ -90,7 +89,6 @@ async function seed() {
     conversationId: hualingConvo.id,
     senderId: hualing.id,
     text: "😂 😂 😂",
-    readStatus: false,
   });
 
   const otherUsers = await Promise.all([

@@ -21,7 +21,6 @@ socket.on("connect", () => {
     store.dispatch(removeOfflineUser(id));
   });
   socket.on("new-message", (data) => {
-    console.log("from socket");
     store.dispatch(setNewMessage(data.message, data.sender));
     // read message for other user if conversationId and activeConversation is equal to one another
     if (data.message.conversationId === store.getState().activeConversation) {
