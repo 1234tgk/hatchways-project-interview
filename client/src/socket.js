@@ -8,8 +8,12 @@ import {
 } from "./store/conversations";
 import { readMessage } from "./store/utils/thunkCreators";
 
-const socket = io(window.location.origin);
+const socket = io(window.location.origin, {
+  reconnection: false,
+  autoConnect: false,
+});
 
+// add function to connect
 socket.on("connect", () => {
   console.log("connected to server");
 
