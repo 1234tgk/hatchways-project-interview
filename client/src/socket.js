@@ -13,6 +13,10 @@ const socket = io(window.location.origin, {
   autoConnect: false,
 });
 
+if (localStorage.getItem("messenger-token")) {
+  socket.connect();
+}
+
 // add function to connect
 socket.on("connect", () => {
   console.log("connected to server");

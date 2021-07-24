@@ -51,7 +51,6 @@ export const login = (credentials) => async (dispatch) => {
     await localStorage.setItem("messenger-token", data.token);
     socket.connect();
     dispatch(gotUser(data));
-    console.log(socket.connected);
     socket.emit("go-online", data.id);
   } catch (error) {
     console.error(error);
@@ -66,7 +65,6 @@ export const logout = (id) => async (dispatch) => {
     dispatch(gotUser({}));
     socket.emit("logout", id);
     socket.disconnect();
-    console.log(socket.connected);
   } catch (error) {
     console.error(error);
   }
@@ -77,6 +75,9 @@ export const logout = (id) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
+    for (const convo of data) {
+      socket.emit("join-room", convo.id);
+    }
     dispatch(gotConversations(data));
   } catch (error) {
     console.error(error);
@@ -93,6 +94,7 @@ const sendMessage = (data, body) => {
     message: data.message,
     recipientId: body.recipientId,
     sender: data.sender,
+    conversationId: body.conversationId,
   });
 };
 
