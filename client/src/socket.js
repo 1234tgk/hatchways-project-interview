@@ -10,12 +10,10 @@ import { readMessage } from "./store/utils/thunkCreators";
 
 const socket = io(window.location.origin, {
   reconnection: false,
-  autoConnect: false,
+  auth: (cb) => {
+    cb({ token: localStorage.getItem("messenger-token") });
+  },
 });
-
-if (localStorage.getItem("messenger-token")) {
-  socket.connect();
-}
 
 // add function to connect
 socket.on("connect", () => {
