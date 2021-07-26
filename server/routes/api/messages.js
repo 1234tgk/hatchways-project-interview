@@ -49,7 +49,7 @@ router.post("/", async (req, res, next) => {
         user1Id: senderId,
         user2Id: recipientId,
       });
-      if (onlineUsers.includes(sender.id)) {
+      if (onlineUsers[sender.id]) {
         sender.online = true;
       }
     }
@@ -136,7 +136,7 @@ router.put("/:conversationId", async (req, res, next) => {
     }
 
     // set property for online status of the other user
-    if (onlineUsers.includes(convoJSON.otherUser.id)) {
+    if (onlineUsers[convoJSON.otherUser.id]) {
       convoJSON.otherUser.online = true;
     } else {
       convoJSON.otherUser.online = false;

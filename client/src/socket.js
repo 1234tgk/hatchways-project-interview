@@ -8,8 +8,14 @@ import {
 } from "./store/conversations";
 import { readMessage } from "./store/utils/thunkCreators";
 
-const socket = io(window.location.origin);
+const socket = io(window.location.origin, {
+  reconnection: false,
+  auth: (cb) => {
+    cb({ token: localStorage.getItem("messenger-token") });
+  },
+});
 
+// add function to connect
 socket.on("connect", () => {
   console.log("connected to server");
 
