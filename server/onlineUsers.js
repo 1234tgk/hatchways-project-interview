@@ -1,2 +1,2 @@
-const onlineUsers = new Set();
+const onlineUsers = {};
 module.exports = onlineUsers;
