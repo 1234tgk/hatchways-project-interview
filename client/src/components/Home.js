@@ -10,7 +10,7 @@ import { clearOnLogout } from "../store/index";
 
 const styles = {
   root: {
-    height: "97vh",
+    height: "95vh",
   },
 };
 
