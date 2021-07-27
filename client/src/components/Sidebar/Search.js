@@ -6,11 +6,9 @@ import { withStyles } from "@material-ui/core/styles";
 const styles = {
   filledInput: {
     height: 50,
-    background: "#E9EEF9",
     borderRadius: 5,
     fontSize: 13,
     fontWeight: "bold",
-    color: "#99A9C4",
     letterSpacing: 0,
     display: "flex",
     justifyContent: "center",
@@ -18,7 +16,6 @@ const styles = {
   },
   input: {
     "&::placeholder": {
-      color: "#ADC0DE",
       opacity: 1,
     },
   },
