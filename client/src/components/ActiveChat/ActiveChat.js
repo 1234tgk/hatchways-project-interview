@@ -9,14 +9,15 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flexGrow: 8,
     flexDirection: "column",
+    height: "100%",
+    overflow: "hidden",
   },
   chatContainer: {
     marginLeft: 41,
-    marginRight: 41,
+    marginRight: 10,
     display: "flex",
     flexDirection: "column",
     flexGrow: 1,
-    justifyContent: "space-between",
   },
 }));
 

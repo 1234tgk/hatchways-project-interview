@@ -10,6 +10,8 @@ const useStyles = makeStyles(() => ({
     paddingLeft: 21,
     paddingRight: 21,
     flexGrow: 1,
+    height: "100%",
+    overflow: "hidden",
   },
   title: {
     fontSize: 20,
@@ -17,6 +19,10 @@ const useStyles = makeStyles(() => ({
     fontWeight: "bold",
     marginTop: 32,
     marginBottom: 15,
+  },
+  chats: {
+    height: "70vh",
+    overflow: "auto",
   },
 }));
 
@@ -30,19 +36,23 @@ const Sidebar = (props) => {
       <CurrentUser />
       <Typography className={classes.title}>Chats</Typography>
       <Search handleChange={handleChange} />
-      {conversations
-        .filter((conversation) =>
-          conversation.otherUser.username.includes(searchTerm)
-        )
-        .map((conversation) => {
-          return (
-            <Chat
-              conversation={conversation}
-              key={conversation.otherUser.username}
-              isActive={store.getState().activeConversation === conversation.id}
-            />
-          );
-        })}
+      <Box className={classes.chats}>
+        {conversations
+          .filter((conversation) =>
+            conversation.otherUser.username.includes(searchTerm)
+          )
+          .map((conversation) => {
+            return (
+              <Chat
+                conversation={conversation}
+                key={conversation.otherUser.username}
+                isActive={
+                  store.getState().activeConversation === conversation.id
+                }
+              />
+            );
+          })}
+      </Box>
     </Box>
   );
 };

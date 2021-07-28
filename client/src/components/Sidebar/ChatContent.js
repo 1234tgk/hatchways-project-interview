@@ -15,12 +15,12 @@ const useStyles = makeStyles((theme) => ({
   },
   previewText: {
     fontSize: 12,
-    color: "#9CADC8",
+    color: theme.palette.text.secondary,
     letterSpacing: -0.17,
   },
   previewTextBold: {
     fontSize: 12,
-    color: "#000000",
+    color: theme.palette.text.primary,
     fontWeight: 700,
     letterSpacing: -0.17,
   },
