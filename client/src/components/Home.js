@@ -1,19 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import {
-  Grid,
-  CssBaseline,
-  Button,
-  ThemeProvider,
-  createTheme,
-} from "@material-ui/core";
+import { connect, useDispatch } from "react-redux";
+import { Grid, CssBaseline, Button } from "@material-ui/core";
 import { SidebarContainer } from "./Sidebar";
 import { ActiveChat } from "./ActiveChat";
 import { logout, fetchConversations } from "../store/utils/thunkCreators";
-import { clearOnLogout } from "../store/index";
-import { theme as defaultTheme } from "../themes/theme";
+import { clearOnLogout, toggleTheme } from "../store/index";
 
 const styles = {
   root: {
@@ -21,36 +14,14 @@ const styles = {
   },
 };
 
-const useDarkMode = () => {
-  const [theme, setTheme] = useState(defaultTheme);
-
-  const {
-    palette: { type },
-  } = theme;
-  const toggleDarkMode = () => {
-    const updatedTheme = {
-      ...theme,
-      palette: {
-        ...theme.palette,
-        type: !type || type === "light" ? "dark" : "light",
-      },
-    };
-
-    setTheme(updatedTheme);
-  };
-
-  return [theme, toggleDarkMode];
-};
-
 const Home = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [theme, toggleDarkMode] = useDarkMode();
-
-  const themeConfig = createTheme(theme);
 
   const { fetchConversations } = props;
 
   const prevPropsRef = useRef({ user: { id: 0 } });
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (props.user.id !== prevPropsRef.current.user.id) {
@@ -74,12 +45,15 @@ const Home = (props) => {
     return <Redirect to="/register" />;
   }
   return (
-    <ThemeProvider theme={themeConfig}>
+    <>
       {/* logout button will eventually be in a dropdown next to username */}
       <Button className={classes.logout} onClick={handleLogout}>
         Logout
       </Button>
-      <Button className={classes.setDark} onClick={toggleDarkMode}>
+      <Button
+        className={classes.setDark}
+        onClick={() => dispatch(toggleTheme())}
+      >
         Set Light/Dark Mode
       </Button>
       <Grid container component="main" className={classes.root}>
@@ -87,7 +61,7 @@ const Home = (props) => {
         <SidebarContainer />
         <ActiveChat />
       </Grid>
-    </ThemeProvider>
+    </>
   );
 };
 

@@ -1,4 +1,6 @@
-export const theme = {
+import { createTheme } from "@material-ui/core";
+
+const base = {
   typography: {
     fontFamily: "Open Sans, sans-serif",
     fontSize: 14,
@@ -20,3 +22,9 @@ export const theme = {
     secondary: { main: "#B0B0B0" },
   },
 };
+
+export const lightTheme = createTheme(base);
+export const darkTheme = createTheme({
+  ...base,
+  palette: { ...base.pallete, type: "dark" },
+});
