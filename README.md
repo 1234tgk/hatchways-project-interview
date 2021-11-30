@@ -1,6 +1,6 @@
 # Messenger
 
-A one-to-one realtime chat app. Project interview from Hatchways. Generated from hatchways/messenger-starter
+A one-to-one realtime chat app.
 
 ## Initial Setup
 
